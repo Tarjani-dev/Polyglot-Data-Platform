@@ -1,0 +1,41 @@
+{
+    "company": "Polyglot Technologies",
+    "totalEmployees": 5,
+    "employees": [
+        {
+            "employeeId": 101,
+            "firstName": "Aarav",
+            "lastName": "Sharma",
+            "department": "Engineering",
+            "location": "Bengaluru"
+        },
+        {
+            "employeeId": 102,
+            "firstName": "Priya",
+            "lastName": "Patel",
+            "department": "Human Resources",
+            "location": "Mumbai"
+        },
+        {
+            "employeeId": 103,
+            "firstName": "Rohan",
+            "lastName": "Gupta",
+            "department": "Finance",
+            "location": "Pune"
+        },
+        {
+            "employeeId": 104,
+            "firstName": "Ananya",
+            "lastName": "Reddy",
+            "department": "Engineering",
+            "location": "Hyderabad"
+        },
+        {
+            "employeeId": 105,
+            "firstName": "Karan",
+            "lastName": "Mehta",
+            "department": "Marketing",
+            "location": "Delhi"
+        }
+    ]
+}
