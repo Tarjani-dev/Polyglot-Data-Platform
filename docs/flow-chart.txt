@@ -1,0 +1,32 @@
+┌────────────────────────┐
+ │   Source Systems       │  (CSV Employee Files & API JSON Responses)
+ └───────────┬────────────┘
+             │
+             ▼
+ ┌────────────────────────┐
+ │ Azure SQL Database     │  (Control Plane & Metadata Control Tables)
+ └───────────┬────────────┘
+             │  (Metadata Lookup: Container & Directory Path Injection)
+             ▼
+ ┌────────────────────────┐
+ │ Azure Data Factory     │  (Orchestration Layer: Lookup → ForEach → Copy Activity)
+ └───────────┬────────────┘
+             │  (Secure Transport via ABFSS protocol)
+             ▼
+ ┌────────────────────────┐
+ │ ADLS Gen2: RAW Zone    │  (Landing Zone: Immutable, Untouched Files)
+ └───────────┬────────────┘
+             │  (Triggered Databricks Job & Key Vault OAuth Authentication)
+             ▼
+ ┌────────────────────────┐
+ │ Azure Databricks       │  (Compute Engine: Apache Spark & PySpark Notebooks)
+ ├────────────────────────┤
+ │ • Bronze Layer         │  (Append-only Delta tables with file path metadata)
+ │ • Silver Layer         │  (Cleansed, typed, and structured Delta tables)
+ │ • Gold Layer           │  (Aggregated and unified analytics-ready Delta tables)
+ └───────────┬────────────┘
+             │
+             ▼
+ ┌────────────────────────┐
+ │ GitHub Version Control │  (Codebase, ADF JSONs, and SQL Backups synced via Git)
+ └────────────────────────┘
