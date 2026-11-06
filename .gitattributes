@@ -1,2 +1,14 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Treat these as text explicitly so diffs render properly on GitHub
+*.py    text
+*.sql   text
+*.md    text
+
+# Ensure data files don't get CRLF-mangled
+*.csv   text eol=lf
+*.json  text eol=lf
+
+# Mark large/binary sample data so GitHub doesn't try to diff it line-by-line
+*.parquet binary
