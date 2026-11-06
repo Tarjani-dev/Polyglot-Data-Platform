@@ -21,57 +21,43 @@ PolyglotAI is an enterprise-grade, metadata-driven data platform built on Azure.
 ---
 
 ## 3. Architecture & Data Flow Diagram
+## 3. Architecture & Data Flow Diagram
+
+```
 ┌────────────────────────┐
-│ Source Systems │ 
-  (CSV Employee Files & 
-  API JSON Responses)
+│   Source Systems       │  (CSV Employee Files & API JSON Responses)
 └───────────┬────────────┘
-│
-▼
+            │
+            ▼
 ┌────────────────────────┐
-│ Azure SQL Database │ 
-  (Control Plane & 
-   Metadata Control 
-   Tables)
+│ Azure SQL Database      │  (Control Plane & Metadata Control Tables)
 └───────────┬────────────┘
-│ (Metadata Lookup: 
-  Container & Directory 
-  Path Injection)
-▼
+            │  (Metadata Lookup: Container & Directory Path Injection)
+            ▼
 ┌────────────────────────┐
-│ Azure Data Factory │ 
-  (Orchestration Layer: 
-  Lookup → ForEach → 
-  Copy Activity)
+│ Azure Data Factory      │  (Orchestration Layer: Lookup → ForEach → Copy Activity)
 └───────────┬────────────┘
-│ (Secure Transport via 
-    ABFSS protocol)
-▼
+            │  (Secure Transport via ABFSS protocol)
+            ▼
 ┌────────────────────────┐
-│ ADLS Gen2: RAW Zone │ 
-  (Landing Zone: 
-  Immutable, 
-  Untouched Files)
+│ ADLS Gen2: RAW Zone     │  (Landing Zone: Immutable, Untouched Files)
 └───────────┬────────────┘
-│ (Triggered Databricks Job 
-   & Key Vault OAuth 
-   Authentication)
-▼
-┌────────────────────────────────────────────────────────────────────────┐
-│ Azure Databricks │ (Compute Engine: Apache Spark & PySpark Notebooks)
-├────────────────────────────────────────────────────────────────────────┤
-│ • Bronze Layer │ (Append-only Delta tables with file path metadata)
-│ • Silver Layer │ (Cleansed, typed, and structured Delta tables)
-│ • Gold Layer   │ (Aggregated and unified analytics-ready Delta tables)
-└───────────┬────────────────────────────────────────────────────────────┘
-│
-▼
+            │  (Triggered Databricks Job & Key Vault OAuth Authentication)
+            ▼
 ┌────────────────────────┐
-│ GitHub Version Control │ 
-  (Codebase, Databricks 
-  Notebooks, and SQL 
-  Scripts synced via Git)
+│ Azure Databricks        │  (Compute Engine: Apache Spark & PySpark Notebooks)
+├────────────────────────┤
+│ • Bronze Layer          │  (Append-only Delta tables with file path metadata)
+│ • Silver Layer          │  (Cleansed, typed, and structured Delta tables)
+│ • Gold Layer            │  (Aggregated and unified analytics-ready Delta tables)
+└───────────┬────────────┘
+            │
+            ▼
+┌────────────────────────┐
+│ GitHub Version Control  │  (Codebase, Databricks Notebooks, and SQL Scripts synced via Git)
 └────────────────────────┘
+```
+
 
 
 ---
