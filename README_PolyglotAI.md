@@ -1,5 +1,7 @@
 # Polyglot Data Platform (PolyglotAI)
 
+> **Note:** This is a personal sandbox project. The Azure resources referenced (storage account, app registration) have been decommissioned and are no longer active.
+
 ## 1. Executive Summary & Architecture Overview
 
 PolyglotAI is an enterprise-grade, metadata-driven data platform built on Azure. It is designed to ingest, process, and govern multi-format enterprise data streams — tabular structured and nested semi-structured data — using a scalable **Medallion Architecture** (Raw → Bronze → Silver → Gold), backed by open-source Delta Lake storage.
@@ -19,41 +21,39 @@ PolyglotAI is an enterprise-grade, metadata-driven data platform built on Azure.
 ---
 
 ## 3. Architecture & Data Flow Diagram
-
-```
 ┌────────────────────────┐
-│   Source Systems       │  (CSV Employee Files & API JSON Responses)
+│ Source Systems │ (CSV Employee Files & API JSON Responses)
 └───────────┬────────────┘
-            │
-            ▼
+│
+▼
 ┌────────────────────────┐
-│ Azure SQL Database      │  (Control Plane & Metadata Control Tables)
+│ Azure SQL Database │ (Control Plane & Metadata Control Tables)
 └───────────┬────────────┘
-            │  (Metadata Lookup: Container & Directory Path Injection)
-            ▼
+│ (Metadata Lookup: Container & Directory Path Injection)
+▼
 ┌────────────────────────┐
-│ Azure Data Factory      │  (Orchestration Layer: Lookup → ForEach → Copy Activity)
+│ Azure Data Factory │ (Orchestration Layer: Lookup → ForEach → Copy Activity)
 └───────────┬────────────┘
-            │  (Secure Transport via ABFSS protocol)
-            ▼
+│ (Secure Transport via ABFSS protocol)
+▼
 ┌────────────────────────┐
-│ ADLS Gen2: RAW Zone     │  (Landing Zone: Immutable, Untouched Files)
+│ ADLS Gen2: RAW Zone │ (Landing Zone: Immutable, Untouched Files)
 └───────────┬────────────┘
-            │  (Triggered Databricks Job & Key Vault OAuth Authentication)
-            ▼
+│ (Triggered Databricks Job & Key Vault OAuth Authentication)
+▼
 ┌────────────────────────┐
-│ Azure Databricks        │  (Compute Engine: Apache Spark & PySpark Notebooks)
+│ Azure Databricks │ (Compute Engine: Apache Spark & PySpark Notebooks)
 ├────────────────────────┤
-│ • Bronze Layer          │  (Append-only Delta tables with file path metadata)
-│ • Silver Layer          │  (Cleansed, typed, and structured Delta tables)
-│ • Gold Layer            │  (Aggregated and unified analytics-ready Delta tables)
+│ • Bronze Layer │ (Append-only Delta tables with file path metadata)
+│ • Silver Layer │ (Cleansed, typed, and structured Delta tables)
+│ • Gold Layer │ (Aggregated and unified analytics-ready Delta tables)
 └───────────┬────────────┘
-            │
-            ▼
+│
+▼
 ┌────────────────────────┐
-│ GitHub Version Control  │  (Codebase, ADF JSONs, and SQL Backups synced via Git)
+│ GitHub Version Control │ (Codebase, Databricks Notebooks, and SQL Scripts synced via Git)
 └────────────────────────┘
-```
+
 
 ---
 
@@ -65,7 +65,7 @@ PolyglotAI is an enterprise-grade, metadata-driven data platform built on Azure.
 4. **Medallion Transformations:**
    - **Raw → Bronze:** Ingests raw files, adds system metadata (`_metadata.file_path`, `_ingestion_time`), and lands them into an append-only Bronze Delta table.
    - **Bronze → Silver:** Cleanses data, handles type casting, parses nested fields, and applies dynamic regex filtering.
-   - **Silver → Gold:** Aggregates and merges business-ready datasets (e.g., joining employee metrics with API metrics) into unified, analytics-ready Delta tables with complete audit trails.
+   - **Silver → Gold:** Aggregates record counts from both Silver tables (employees and API responses) into a unified daily audit table, tracking ingestion volume by source and date.
 
 ---
 
@@ -93,6 +93,8 @@ Tables that actively control the pipeline and log its activity.
 | `dbo.ValidationErrors` | Captures schema mismatches or corrupt file logs | `ErrorID` |
 
 > **Architecture Note:** Storing configuration in `dbo.ControlTable` prevents hardcoding file paths in Azure Data Factory.
+
+> **Note:** PDF, DOCX, and HTML ingestion are catalogued in the metadata schema but not yet processed by the Databricks pipeline — current notebooks handle CSV and JSON sources only.
 
 ---
 
