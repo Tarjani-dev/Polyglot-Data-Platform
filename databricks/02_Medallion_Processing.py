@@ -10,7 +10,6 @@ print("✅ Ready to process Medallion Layers!")
 # COMMAND ----------
 
 # DBTITLE 1,Shared setup
-# COMMAND ----------
 import re
 
 from pyspark.sql.functions import col, current_timestamp, lit
@@ -38,6 +37,7 @@ bronze_path = f"abfss://bronze@{storage_account}.dfs.core.windows.net/delta/empl
 # COMMAND ----------
 # MAGIC %md
 # MAGIC ## Bronze Layer: Raw CSV Ingestion (Employees)
+# COMMAND ----------
 
 # DBTITLE 1,Cell 2
 # 2. Read all CSV files dynamically from the raw folder

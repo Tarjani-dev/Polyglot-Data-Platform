@@ -7,10 +7,9 @@
 # secret scope, the same way the client secret already is via dbutils.secrets.get.
 # Left as-is here since the environment is retired.
 
-client_id = "d03acda5-f58c-449b-8153-8bda233754ff" #PASTE_YOUR_CLIENT_ID_HERE
-tenant_id = "493896fc-33b0-40aa-9232-31d29aa9e404" #PASTE_YOUR_TENANT_ID_HERE
-storage_account_name = "stprojectvdevsi" #PASTE_YOUR_STORAGE_ACCOUNT_NAME_HERE # (e.g., stprojectvdevsi)
-
+client_id = "d03acda5-f58c-449b-8153-8bda233754ff" 
+tenant_id = "493896fc-33b0-40aa-9232-31d29aa9e404" 
+storage_account_name = "stprojectvdevsi" 
 
 # --- STEP 2: Configure Spark to authenticate to ADLS Gen2 via OAuth ---
 configs = {
