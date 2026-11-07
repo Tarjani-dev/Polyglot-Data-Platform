@@ -10,6 +10,7 @@ print("✅ Ready to process Medallion Layers!")
 # COMMAND ----------
 
 # DBTITLE 1,Shared setup
+# COMMAND ----------
 import re
 
 from pyspark.sql.functions import col, current_timestamp, lit
@@ -66,6 +67,7 @@ display(df_bronze)
 # COMMAND ----------
 # MAGIC %md
 # MAGIC ## Bronze Layer: Raw JSON Ingestion (API Responses)
+# COMMAND ----------
 
 # ==========================================
 # PART 2: PROCESS THE JSON FILES
@@ -102,6 +104,7 @@ display(df_bronze_json)
 # COMMAND ----------
 # MAGIC %md
 # MAGIC ## Silver Layer: Cleansing & Deduplication
+# COMMAND ----------
 
 #silver
 from pyspark.sql.functions import col

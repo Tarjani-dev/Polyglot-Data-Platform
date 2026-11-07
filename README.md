@@ -111,6 +111,7 @@ Hardcoding pipelines creates a maintenance bottleneck — with hundreds of sourc
 
 **Q2: How is security and credential management handled between Databricks and ADLS Gen2?**
 Storage keys and service principal secrets are never hardcoded in notebooks. Azure Key Vault, backed by Databricks Secret Scopes, is used instead — Databricks authenticates to ADLS Gen2 via OAuth 2.0 Client Credentials (`ClientCredsTokenProvider`), passing scoped client IDs and secrets securely at runtime.
+(Note: client_id and tenant_id are currently hardcoded as a sandbox shortcut — see the note in 01_Mount_DataLake.py.)
 
 **Q3: Why Delta Lake over standard Parquet in the Silver and Gold layers?**
 Parquet is great for immutable, columnar storage, but lacks transactional guarantees. Delta Lake sits on top of Parquet and adds ACID transactions, time travel (data versioning), schema enforcement, and optimized file compaction (`OPTIMIZE`/`VACUUM`) — essential for production data quality and audit compliance.

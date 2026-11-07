@@ -1,6 +1,5 @@
 # Databricks notebook source
 # DBTITLE 1,Cell 1
-#The client_id and tenant_id values in the Databricks notebooks are hardcoded — a learning-project shortcut. In production, these would be pulled from `dbutils.widgets`, environment variables, or a secret scope, the same way the client secret already is via `dbutils.secrets.get`. Left as-is here since the environment is retired.
 
 # --- STEP 1: Azure AD service principal credentials ---
 # NOTE: client_id and tenant_id below are hardcoded as a learning-project shortcut.
