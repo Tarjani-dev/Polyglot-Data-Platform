@@ -1,6 +1,7 @@
 # Databricks notebook source
 # DBTITLE 1,Cell 1
 # Cell 1: Call the Authentication Notebook
+
 %run ./01_Mount_DataLake
 
 storage_account = "stprojectvdevsi"
@@ -14,6 +15,12 @@ import re
 from pyspark.sql.functions import col, current_timestamp, lit
 
 storage_account_fqdn = f"{storage_account}.dfs.core.windows.net"
+
+# NOTE: client_id and tenant_id below are hardcoded as a learning-project shortcut.
+# In production these would come from dbutils.widgets, environment variables, or a
+# secret scope, the same way the client secret already is via dbutils.secrets.get.
+# Left as-is here since the environment is retired.
+
 configs = {
     "fs.azure.account.auth.type": "OAuth",
     "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
@@ -28,6 +35,8 @@ raw_path = f"abfss://raw@{storage_account}.dfs.core.windows.net/source=local/"
 bronze_path = f"abfss://bronze@{storage_account}.dfs.core.windows.net/delta/employees/"
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ## Bronze Layer: Raw CSV Ingestion (Employees)
 
 # DBTITLE 1,Cell 2
 # 2. Read all CSV files dynamically from the raw folder
@@ -55,6 +64,8 @@ print("✅ Bronze Layer processed successfully!")
 display(df_bronze)
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ## Bronze Layer: Raw JSON Ingestion (API Responses)
 
 # ==========================================
 # PART 2: PROCESS THE JSON FILES
@@ -69,7 +80,7 @@ df_raw_json = spark.read \
     .option("multiline", "true") \
     .json(f"{raw_path}*.json")
 
-# 3. Apply your brilliant Regex Column Cleaner
+# 3. Normalize column names (replace special characters/whitespace with underscores)
 df_raw_json = df_raw_json.toDF(*[re.sub(r"[ ,;{}()\n\t=]+", "_", c).strip("_") for c in df_raw_json.columns])
 
 # 4. Add Lineage Metadata
@@ -89,6 +100,8 @@ print("✅ JSON Bronze Layer processed successfully!")
 display(df_bronze_json)
 
 # COMMAND ----------
+# MAGIC %md
+# MAGIC ## Silver Layer: Cleansing & Deduplication
 
 #silver
 from pyspark.sql.functions import col
@@ -137,7 +150,7 @@ print("✅ API Responses Silver Layer cleaned and saved!")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC
+# MAGIC ## Gold Layer: Daily Platform Audit
 
 # COMMAND ----------
 
@@ -183,21 +196,3 @@ display(df_gold_unified)
 gold_audit_path = f"abfss://gold@{storage_account}.dfs.core.windows.net/delta/daily_platform_audit/"
 display(spark.read.format("delta").load(gold_audit_path))
 
-# COMMAND ----------
-
-# DBTITLE 1,Cell 9
-storage_account = "stprojectvdevsi"
-storage_account_fqdn = f"{storage_account}.dfs.core.windows.net"
-
-configs = {
-    "fs.azure.account.auth.type": "OAuth",
-    "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
-    "fs.azure.account.oauth2.client.id": "d03acda5-f58c-449b-8153-8bda233754ff",
-    "fs.azure.account.oauth2.client.secret": dbutils.secrets.get(scope="polyglot-scope", key="databricks-client-secret"),
-    "fs.azure.account.oauth2.client.endpoint": "https://login.microsoftonline.com/493896fc-33b0-40aa-9232-31d29aa9e404/oauth2/token",
-}
-for key, value in configs.items():
-    spark.conf.set(f"{key}.{storage_account_fqdn}", value)
-
-gold_audit_path = f"abfss://gold@{storage_account}.dfs.core.windows.net/delta/daily_platform_audit/"
-display(spark.read.format("delta").load(gold_audit_path))

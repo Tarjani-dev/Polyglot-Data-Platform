@@ -1,6 +1,7 @@
 # Polyglot Data Platform (PolyglotAI)
 
-> **Note:** This is a personal sandbox project. The Azure resources referenced (storage account, app registration) have been decommissioned and are no longer active.
+> **Note:** This is a personal sandbox project. The Azure resources referenced (storage account, app registration) have been decommissioned and are no longer active. The `client_id` and `tenant_id` values in the Databricks notebooks are hardcoded — a learning-project shortcut. In production, these would be pulled from `dbutils.widgets`, environment variables, or a secret scope, the same way the client secret already is via `dbutils.secrets.get`. Left as-is here since the environment is retired.
+
 
 ## 1. Executive Summary & Architecture Overview
 
